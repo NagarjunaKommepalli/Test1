@@ -1,0 +1,37 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Fetch history to identify new blobs
+        run: >
+          git fetch --unshallow --no-tags
+          --no-recurse-submodules
+          --no-write-fetch-head
+          --filter=blob:none origin HEAD
+      - name: Check for large files
+        uses: 10XGenomics/git-hygiene-check@main
+        with:
+          max_text_disk_size: 200000
+          max_binary_size: 32768
+      - name: Lint
+        uses: github/super-linter/slim@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_NATURAL_LANGUAGE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          LINTER_RULES_PATH: /
+          MARKDOWN_CONFIG_FILE: .markdownlint.yaml
