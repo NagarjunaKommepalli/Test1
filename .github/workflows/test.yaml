@@ -27,7 +27,7 @@ jobs:
           max_text_disk_size: 200000
           max_binary_size: 32768
       - name: Lint
-        uses: github/super-linter/slim@v4
+        uses: github/super-linter/slim@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_NATURAL_LANGUAGE: false
